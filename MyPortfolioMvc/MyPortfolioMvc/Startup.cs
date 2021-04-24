@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using MyPortfolioMvc.Data;
+using MyPortfolioMvc.Extensions;
 
 namespace MyPortfolioMvc
 {
@@ -20,6 +21,9 @@ namespace MyPortfolioMvc
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+
+            services.AddService(ConfigureMapper);
+
             services.AddControllersWithViews();
 
             services.AddDbContext<PortfolioContext>(options =>
@@ -52,6 +56,11 @@ namespace MyPortfolioMvc
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
             });
+        }
+
+        private void ConfigureMapper(IServiceCollection services)
+        {
+            
         }
     }
 }
