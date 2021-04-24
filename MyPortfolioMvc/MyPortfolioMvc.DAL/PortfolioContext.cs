@@ -1,9 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using MyPortfolioMvc.Models;
+using MyPortfolioMvc.DAL.Entities;
 
-namespace MyPortfolioMvc.Data
-{
-    public class PortfolioContext : DbContext
+namespace MyPortfolioMvc.DAL
+{    public class PortfolioContext : DbContext
     {
         public PortfolioContext(DbContextOptions<PortfolioContext> options)
             : base(options)

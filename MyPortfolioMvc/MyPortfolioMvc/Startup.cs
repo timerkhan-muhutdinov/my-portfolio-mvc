@@ -1,11 +1,15 @@
+using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using MyPortfolioMvc.Data;
+using MyPortfolioMvc.BLL.Interfaces;
+using MyPortfolioMvc.BLL.Services;
+using MyPortfolioMvc.DAL;
 using MyPortfolioMvc.Extensions;
+using MyPortfolioMvc.Mappings;
 
 namespace MyPortfolioMvc
 {
@@ -23,6 +27,8 @@ namespace MyPortfolioMvc
         {
 
             services.AddService(ConfigureMapper);
+
+            services.AddTransient<IPostService, PostService>();
 
             services.AddControllersWithViews();
 
@@ -60,7 +66,13 @@ namespace MyPortfolioMvc
 
         private void ConfigureMapper(IServiceCollection services)
         {
-            
+            var mapperConfiguration = new MapperConfiguration(conf =>
+            {
+                conf.AddProfile<PostProfile>();
+            });
+
+            IMapper mapper = mapperConfiguration.CreateMapper();
+            services.AddSingleton(mapper);
         }
     }
 }

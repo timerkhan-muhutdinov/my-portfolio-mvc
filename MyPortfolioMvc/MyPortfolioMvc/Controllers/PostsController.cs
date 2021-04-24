@@ -2,48 +2,37 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using MyPortfolioMvc.Data;
+using MyPortfolioMvc.BLL.DTO.Post;
+using MyPortfolioMvc.BLL.Interfaces;
 using MyPortfolioMvc.Models;
+using MyPortfolioMvc.Models.Post;
 
 namespace MyPortfolioMvc.Controllers
 {
     public class PostsController : Controller
     {
-        private readonly PortfolioContext _context;
+        private readonly IMapper _mapper;
+        private readonly IPostService _postService;
 
-        public PostsController(PortfolioContext context)
+        public PostsController(IPostService postService, IMapper mapper)
         {
-            _context = context;
+            _postService = postService;
+            _mapper = mapper;
         }
 
         // GET: Posts
         public async Task<IActionResult> Index(string postCreateDate, string searchString)
         {
-            // Use LINQ to get list of genres.
-            IQueryable<DateTime> dateQuery = from m in _context.Post
-                                            orderby m.CreatedDate
-                                            select m.CreatedDate;
-
-            var posts = from m in _context.Post
-                         select m;
-
-            if (!string.IsNullOrEmpty(searchString))
-            {
-                posts = posts.Where(s => s.Title.Contains(searchString));
-            }
-
-            if (!string.IsNullOrEmpty(postCreateDate))
-            {
-                posts = posts.Where(x => x.CreatedDate.Date == DateTime.Parse(postCreateDate).Date);
-            }
+            var (posts, createDates) = _postService.GetFilterPosts(postCreateDate, searchString);
 
             var movieGenreVM = new PostCreateDateViewModel
             {
-                CreateDates = new SelectList(await dateQuery.Select(s => s.Date.ToString("dd/MM/yyyy")).Distinct().ToListAsync()),
-                Posts = await posts.ToListAsync()
+                CreateDates = new SelectList(createDates),
+                Posts = _mapper.Map<List<PostFilterViewModel>>(posts)
             };
 
             return View(movieGenreVM);
@@ -52,13 +41,14 @@ namespace MyPortfolioMvc.Controllers
         // GET: Posts/Details/5
         public async Task<IActionResult> Details(int? id)
         {
+           
             if (id == null)
             {
                 return NotFound();
             }
 
-            var post = await _context.Post
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var post = _mapper.Map<PostInfoViewModel>(_postService.GetPost(id));
+
             if (post == null)
             {
                 return NotFound();
@@ -78,12 +68,12 @@ namespace MyPortfolioMvc.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Title,ShortDescription,Description,Meta,UrlSlug,IsPublish,CreatedDate,PostedDate,ModifiedDate,DeletedDate,Price,Rating")] Post post)
+        public async Task<IActionResult> Create([Bind("Id,Title,ShortDescription,Description,Meta,UrlSlug,IsPublish,CreatedDate,PostedDate,ModifiedDate,DeletedDate,Price,Rating")] PostCreateViewModel post)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(post);
-                await _context.SaveChangesAsync();
+                _postService.CreatePost(_mapper.Map<PostCreateDto>(post));
+
                 return RedirectToAction(nameof(Index));
             }
             return View(post);
@@ -97,7 +87,7 @@ namespace MyPortfolioMvc.Controllers
                 return NotFound();
             }
 
-            var post = await _context.Post.FindAsync(id);
+            var post = _mapper.Map<PostInfoViewModel>(_postService.GetPost(id));
             if (post == null)
             {
                 return NotFound();
@@ -110,7 +100,7 @@ namespace MyPortfolioMvc.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,ShortDescription,Description,Meta,UrlSlug,IsPublish,CreatedDate,PostedDate,ModifiedDate,DeletedDate,Price")] Post post)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,ShortDescription,Description,Meta,UrlSlug,IsPublish,CreatedDate,PostedDate,ModifiedDate,DeletedDate,Price")] PostUpdateViewModel post)
         {
             if (id != post.Id)
             {
@@ -121,19 +111,11 @@ namespace MyPortfolioMvc.Controllers
             {
                 try
                 {
-                    _context.Update(post);
-                    await _context.SaveChangesAsync();
+                    _postService.UpdatePost(_mapper.Map<PostUpdateDto>(post));
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!PostExists(post.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                  return NotFound();
                 }
                 return RedirectToAction(nameof(Index));
             }
@@ -148,8 +130,8 @@ namespace MyPortfolioMvc.Controllers
                 return NotFound();
             }
 
-            var post = await _context.Post
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var post = _mapper.Map<PostInfoViewModel>(_postService.GetPost(id));
+
             if (post == null)
             {
                 return NotFound();
@@ -163,15 +145,8 @@ namespace MyPortfolioMvc.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var post = await _context.Post.FindAsync(id);
-            _context.Post.Remove(post);
-            await _context.SaveChangesAsync();
+            _postService.DeletePost(id);
             return RedirectToAction(nameof(Index));
-        }
-
-        private bool PostExists(int id)
-        {
-            return _context.Post.Any(e => e.Id == id);
         }
     }
 }

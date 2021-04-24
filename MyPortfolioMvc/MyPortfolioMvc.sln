@@ -3,7 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30517.126
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyPortfolioMvc", "MyPortfolioMvc\MyPortfolioMvc.csproj", "{4BCF00F2-A414-42C8-A405-0F95FD902BA5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyPortfolioMvc", "MyPortfolioMvc\MyPortfolioMvc.csproj", "{4BCF00F2-A414-42C8-A405-0F95FD902BA5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyPortfolioMvc.DAL", "MyPortfolioMvc.DAL\MyPortfolioMvc.DAL.csproj", "{18F4AE83-FEB4-4D9F-BC75-C45F7C98C3EB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyPortfolioMvc.BLL", "MyPortfolioMvc.BLL\MyPortfolioMvc.BLL.csproj", "{632E8D68-ED42-4EC8-9B40-0730C17977E9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +19,14 @@ Global
 		{4BCF00F2-A414-42C8-A405-0F95FD902BA5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4BCF00F2-A414-42C8-A405-0F95FD902BA5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4BCF00F2-A414-42C8-A405-0F95FD902BA5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{18F4AE83-FEB4-4D9F-BC75-C45F7C98C3EB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{18F4AE83-FEB4-4D9F-BC75-C45F7C98C3EB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{18F4AE83-FEB4-4D9F-BC75-C45F7C98C3EB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{18F4AE83-FEB4-4D9F-BC75-C45F7C98C3EB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{632E8D68-ED42-4EC8-9B40-0730C17977E9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{632E8D68-ED42-4EC8-9B40-0730C17977E9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{632E8D68-ED42-4EC8-9B40-0730C17977E9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{632E8D68-ED42-4EC8-9B40-0730C17977E9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

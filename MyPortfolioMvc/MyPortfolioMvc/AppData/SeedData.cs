@@ -1,10 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using MyPortfolioMvc.Data;
+using MyPortfolioMvc.DAL;
+using MyPortfolioMvc.DAL.Entities;
 using System;
 using System.Linq;
 
-namespace MyPortfolioMvc.Models
+namespace MyPortfolioMvc.AppData
 {
     public static class SeedData
     {
